@@ -6,3 +6,4 @@ ip route add default via 172.16.5.253
 
 iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
 
+echo "nameserver 8.8.8.8" > /etc/resolv.conf
