@@ -1,7 +1,7 @@
 ip link set eth0 up
 ip link set eth1 up
-ip addr add 10.0.0.1/24 dev eth0
-ip addr add 172.16.5.254/24 dev eth1
+ip addr add 10.0.0.1/24 dev eth1
+ip addr add 172.16.5.254/24 dev eth0
 ip route add default via 172.16.5.253
 
 iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
