@@ -4,3 +4,37 @@ ip addr add 192.168.1.254/24 dev eth0
 ip addr add 172.16.5.253/24 dev eth1
 ip route add default via 172.16.5.254
 echo "nameserver 8.8.8.8" > /etc/resolv.conf
+apt update
+apt install isc-dhcp-server -y
+
+cat <<EOF >> /etc/dhcp/dhcpd.conf
+subnet 192.168.1.0 netmask 255.255.255.0
+{
+range 192.168.1.1 192.168.1.100;
+default-lease-time 21600;
+max-lease-time 43200;
+option routers 192.168.1.254;
+option domain-name-servers 8.8.8.8;
+}
+subnet 172.16.5.0 netmask 255.255.255.0
+{
+range 172.16.5.1 172.16.5.254;
+default-lease-time 21600;
+max-lease-time 43200;
+option routers 172.16.5.253;
+option domain-name-servers 8.8.8.8;
+}
+host r1{
+hardware ethernet add;
+fixed-address 172.16.5.254;
+}
+host pcc{
+hardware ethernet add;
+fixed-address 172.16.5.100;
+}
+EOF
+
+
+sed -i 's/^#DHCPDv4_CONF[[:space:]]*=/DHCPDv4_CONF=/' /etc/default/isc-dhcp-server
+sed -i 's/^#DHCPDv4_PID[[:space:]]*=/DHCPDv4_PID=/' /etc/default/isc-dhcp-server
+sed -i 's/^INTERFACESv4=".*"/INTERFACESv4="eth0 eth1"/' /etc/default/isc-dhcp-server
