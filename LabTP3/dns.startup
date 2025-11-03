@@ -1,0 +1,7 @@
+ip link set eth0 up
+ip addr add 192.168.0.11 dev eth0
+ip route add default 192.168.0.254
+cat <<EOF >> /etc/resolv.conf
+nameserver 192.168.0.11
+search blue.org
+EOF
